@@ -1,9 +1,11 @@
 # Multi Section Landing Page
-Udacity Front End Web Developer Nanodegree Program
 
-JavaScript &amp; The DOM.  
 
-Cours project : Create a multi-section landing page, with a dynamically updating navigational menu based on the amount of content that is added to the page.
+This is the second project for the Front End Web Developer Nanodegree Program by Udacity
+
+This project is related to the 2nd point of the course : JavaScript &amp; The DOM.
+
+The theme is : Create a multi-section landing page, with a dynamically updating navigational menu based on the amount of content that is added to the page.
 
 ________
 
