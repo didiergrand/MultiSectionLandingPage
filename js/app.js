@@ -1,66 +1,113 @@
+const sections = document.querySelectorAll('.card');
+const nav = document.querySelector("nav");
+const backToTopBtn = document.querySelector("#back_to_top");
+
 // CREATE THE NAVIGATION LIST
-// Look for the sections - Get the ID of sections
-// Create LI items, add the links and display the title which is in the data-title attribute
-
-let section = document.querySelectorAll('.card');
-
-for(let i = 0; i < section.length; i++){
-
-    let sectionId     = section[i].id;
-    sectionTitle  = section[i].dataset.title;
-
-    document.getElementById("menu").innerHTML +=  '<li><a href="#'+sectionId+'">'+sectionTitle+'</a></li>';
-
-
-
-
+const ulMenu = document.createElement('ul');
+// Add id menu to the ul
+ulMenu.setAttribute("id", "menu");
+// Add menu to the header nav
+nav.append(ulMenu);
+// Create content of menu
+for (let i = 0; i < sections.length; i++) {
+  // Look for the sections - Get the ID of sections
+  const sectionId = sections[i].id;
+  // Create LI items, add the links and display the title which is in the data-title attribute
+  const sectionTitle = sections[i].dataset.title;
+  ulMenu.innerHTML += '<li><a href="#' + sectionId + '">' + sectionTitle + '</a></li>';
 }
 
+// ADD ACTIVE STATE TO THE MENU ITEM
+function makeActive() {
+  for (const section of sections) {
+    const card = section.getBoundingClientRect();
+    if (card.top <= 200 && card.bottom >= 150) {
 
+      const sectionTitle = section.dataset.title;
+      const navItem = document.querySelectorAll("#menu li");
 
-// DISPLAY NAVIGATION ACTIVE STATE
-
-// Add "active" class to the nav element - if the section is in the viewport the nav element need to have the active status
-
-// Get the element, add a click listener...
-document.getElementById("menu").addEventListener("click", function(e) {
-	// e.target is the clicked element!
-	// If it was a link item
-	if(e.target && e.target.nodeName == "A") {
-		// List item found!  Output the ID!
-    console.log(e.target);
-
-    // remove the active class
-    const elems = document.querySelectorAll(".active");
-
-    if(elems !==null){
-      for(let i = 0; i < elems.length; i++){
-        elems[i].classList.remove("active");
+      // Check if there is a nav item
+      if (navItem !== null) {
+        for (let i = 0; i < navItem.length; i++) {
+          // and add active class to the nav item if it match with the current visible section or remove if not
+          if (navItem[i].textContent == sectionTitle) {
+            navItem[i].classList.add("active");
+          } else {
+            navItem[i].classList.remove("active");
+          }
+        }
       }
     }
-    // add the active class to the new navigation item
-    e.target.parentNode.className = 'active';
+  }
+}
 
-    // Add an active state to the active section content, and reduce the opacity of the others sections
-    let activeSection  = e.target.attributes.href.value;
-    activeSection = activeSection.substring(1);
-    document.getElementById(activeSection).classList.add('active');
-	}
-});
+// REMOVE ACTIVE STATE TO THE MENU ITEMS
+function removeActive() {
+  // remove the active class if any of the blog section are visible
+  const activeItems = document.querySelectorAll(".active");
+  if (activeItems !== null) {
+    for (let i = 0; i < activeItems.length; i++) {
+      activeItems[i].classList.remove("active");
+    }
+  }
+}
 
-
-// SCROLLING ANIMATION
-function update() {
+// ALL WE NEED TO UPDATE WHEN WE SCROLL
+function updateOnScroll() {
   const header = document.querySelector("header");
-  const box = header.getBoundingClientRect();
-  console.log(box.y);
-  if(box.y < -100){
+  const blogs = document.querySelector('#blog-recents');
+  const headerPos = header.getBoundingClientRect();
+  const blogsPos = blogs.getBoundingClientRect();
+
+  // Add css class to header to change the bg color when is scrolled
+  if (headerPos.y < -100) {
     header.classList.add('scrolled');
   } else {
     header.classList.remove('scrolled');
   }
-}
-document.addEventListener('scroll', update);
-update();
 
-// Add smooth scrolling to the page
+  // Add active class to the menu items only if the blog section is visible
+  if (blogsPos.top <= 0 && blogsPos.bottom >= 0) {
+    makeActive();
+  } else {
+    removeActive();
+  }
+
+  // BACK TO TOP BUTTON
+  // viewport height
+  var viewportHeight = window.innerHeight;
+  if (viewportHeight / 2 < -(headerPos.top)) {
+    backToTopBtn.classList.add('show');
+  } else {
+    backToTopBtn.classList.remove('show');
+  }
+}
+
+// BACK TO TOP
+function backToTop() {
+  window.scroll(0, 0)
+}
+
+// OPEN CLOSE THE MOBILE NAV
+function displayMenu() {
+  nav.classList.toggle('open');
+}
+
+function hideMenu() {
+  nav.classList.remove('open');
+}
+
+// Scroll to top btn
+backToTopBtn.addEventListener("click", backToTop);
+
+// Open the mobile nav
+const openMenu = document.querySelector('#open_menu');
+openMenu.addEventListener("click", displayMenu);
+// Close the mobile nav on click a nav link
+const menuItem = document.querySelector('#menu');
+menuItem.addEventListener("click", hideMenu);
+
+// UPDATE ON SCROLL
+document.addEventListener('scroll', updateOnScroll);
+// UPDATE ON LOAD
+updateOnScroll();
