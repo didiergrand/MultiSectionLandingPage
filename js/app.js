@@ -21,8 +21,7 @@ for (let i = 0; i < sections.length; i++) {
 function makeActive() {
   for (const section of sections) {
     const card = section.getBoundingClientRect();
-    if (card.top <= 200 && card.bottom >= 150) {
-
+    if (card.top <= 300 && card.bottom >= 100) {
       const sectionTitle = section.dataset.title;
       const navItem = document.querySelectorAll("#menu li");
 
@@ -67,7 +66,7 @@ function updateOnScroll() {
   }
 
   // Add active class to the menu items only if the blog section is visible
-  if (blogsPos.top <= 0 && blogsPos.bottom >= 0) {
+  if (blogsPos.top <= 100 && blogsPos.bottom >= 0) {
     makeActive();
   } else {
     removeActive();
