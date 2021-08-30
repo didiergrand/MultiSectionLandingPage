@@ -15,7 +15,9 @@ for (let i = 0; i < sections.length; i++) {
   // Create LI items, add the links and display the title which is in the data-title attribute
   const sectionTitle = sections[i].dataset.title;
   ulMenu.innerHTML += '<li><a href="#' + sectionId + '">' + sectionTitle + '</a></li>';
+
 }
+
 
 // ADD ACTIVE STATE TO THE MENU ITEM
 function makeActive() {
@@ -84,7 +86,11 @@ function updateOnScroll() {
 
 // BACK TO TOP
 function backToTop() {
-  window.scroll(0, 0)
+  window.scroll({
+    top: 0,
+    left: 0,
+    behavior: 'smooth'
+  });
 }
 
 // OPEN CLOSE THE MOBILE NAV
@@ -96,6 +102,31 @@ function hideMenu() {
   nav.classList.remove('open');
 }
 
+function smoothScroll(e) {
+	// e.target is the clicked element
+	if(e.target && e.target.nodeName == "A") {
+    // remove the native html behavior
+    e.preventDefault();
+		// get the id of the target element
+    const targetId = document.getElementById(e.target.innerHTML.toLowerCase());
+		// get the position of the target element related to the browser window
+    const bodyPos = document.body.getBoundingClientRect();
+    const targetIdPos = targetId.getBoundingClientRect();
+    const offset = targetIdPos.top - bodyPos.top;
+    window.scroll({
+      top: offset,
+      left: 0,
+      behavior: 'smooth'
+    });
+	}
+};
+
+function clickOnMenuItem(e){
+  hideMenu();
+  smoothScroll(e);
+}
+
+
 // Scroll to top btn
 backToTopBtn.addEventListener("click", backToTop);
 
@@ -104,7 +135,7 @@ const openMenu = document.querySelector('#open_menu');
 openMenu.addEventListener("click", displayMenu);
 // Close the mobile nav on click a nav link
 const menuItem = document.querySelector('#menu');
-menuItem.addEventListener("click", hideMenu);
+menuItem.addEventListener("click", clickOnMenuItem);
 
 // UPDATE ON SCROLL
 document.addEventListener('scroll', updateOnScroll);
